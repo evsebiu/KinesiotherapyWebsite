@@ -1,0 +1,463 @@
+/* ==========================================================================
+   1. VARIABLES & CONFIGURATION
+   ========================================================================== */
+:root {
+    /* Brand Colors - Medical/Calm/Premium */
+    --clr-primary: #5b6ee1;       /* Soft Indigo - Trust & Calm */
+    --clr-primary-dark: #4351b0;  /* Darker Indigo for hover/focus */
+    --clr-secondary: #764ba2;     /* Muted Purple - Premium feel */
+    --clr-accent: #2eaf6d;        /* Medical Green - CTA & Success */
+
+    /* Neutral Colors */
+    --clr-text-heading: #1a202c;  /* Almost black for readability */
+    --clr-text-body: #4a5568;     /* Dark gray for reduced eye strain */
+    --clr-text-light: #718096;    /* Muted text */
+    --clr-bg-light: #f7fafc;      /* Very light cool gray */
+    --clr-bg-white: #ffffff;
+    --clr-border: #e2e8f0;
+
+    /* Gradients */
+    --grad-primary: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-secondary) 100%);
+    --grad-text: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+
+    /* Typography */
+    --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Spacing & Layout */
+    --spacer-section: clamp(4rem, 8vw, 6rem); /* Responsive vertical spacing */
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.25rem;
+
+    /* Shadows (Soft & Layered) */
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   2. RESET & BASE STYLES
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-family-base);
+    color: var(--clr-text-body);
+    background-color: var(--clr-bg-light);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--clr-text-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(2rem, 4vw, 2.5rem); }
+p.lead { font-weight: 400; color: var(--clr-text-body); }
+
+/* ==========================================================================
+   3. COMPONENTS: NAVIGATION
+   ========================================================================== */
+.navbar {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    transition: all var(--transition-base);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Fallback for browsers not supporting background-clip text */
+    color: var(--clr-primary);
+}
+
+.nav-link {
+    color: var(--clr-text-heading) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    position: relative;
+    transition: color var(--transition-fast);
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--clr-primary) !important;
+}
+
+/* Nav link underline animation */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--clr-primary);
+    transition: all var(--transition-base);
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+/* ==========================================================================
+   4. COMPONENTS: HERO SECTION
+   ========================================================================== */
+.hero {
+    position: relative;
+    background: var(--grad-primary);
+    color: var(--clr-bg-white);
+    padding: 160px 0 100px; /* Account for fixed navbar */
+    overflow: hidden;
+}
+
+/* Subtle pattern overlay */
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g fill="%23ffffff" fill-opacity="0.05" fill-rule="evenodd"><circle cx="3" cy="3" r="3"/></g></svg>');
+    opacity: 0.6;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+    max-width: 600px;
+}
+
+/* Hero Image Icon Wrapper */
+.hero-image {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ==========================================================================
+   5. COMPONENTS: CARDS (Features & Services)
+   ========================================================================== */
+.feature-card, .service-card {
+    background: var(--clr-bg-white);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    height: 100%;
+}
+
+/* Feature Specifics */
+.feature-card {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--clr-bg-light); /* Fallback */
+    background: linear-gradient(135deg, rgba(91, 110, 225, 0.1), rgba(118, 75, 162, 0.1));
+    color: var(--clr-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    transition: transform var(--transition-fast);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--grad-primary);
+    color: white;
+}
+
+/* Service Specifics */
+.service-card {
+    box-shadow: var(--shadow-md);
+    border: none;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.service-header {
+    background: var(--grad-primary);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.service-body {
+    padding: 2rem;
+}
+
+.price-tag {
+    display: inline-block;
+    background-color: rgba(46, 175, 109, 0.1);
+    color: var(--clr-accent);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   6. COMPONENTS: FORMS & BUTTONS
+   ========================================================================== */
+/* Buttons */
+.btn {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+}
+
+.btn-primary {
+    background-color: var(--clr-primary);
+    border-color: var(--clr-primary);
+    box-shadow: 0 4px 6px rgba(91, 110, 225, 0.25);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--clr-primary-dark);
+    border-color: var(--clr-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(91, 110, 225, 0.3);
+}
+
+.btn-light {
+    background: var(--clr-bg-white);
+    color: var(--clr-primary);
+    border: none;
+}
+
+.btn-light:hover {
+    background: #f1f5f9;
+    color: var(--clr-primary-dark);
+}
+
+.btn-outline-light {
+    border-width: 2px;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-color: white;
+}
+
+/* Form Controls - FORCED OVERRIDE */
+.form-control, .form-select {
+    padding: 0.8rem 1rem !important; /* Force spacing */
+    border: 2px solid #e2e8f0 !important; /* Force border visibility */
+    border-radius: 0.5rem !important;
+    font-size: 1rem;
+    background-color: #f8fafc !important; /* Force light blue-ish bg */
+    color: #1a202c !important;
+    box-shadow: none !important; /* Remove Bootstrap blue glow default */
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #5b6ee1 !important; /* Your primary color */
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(91, 110, 225, 0.15) !important; /* Custom Glow */
+}
+
+/* Appointment Card */
+.appointment-card {
+    background: var(--clr-bg-white);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    box-shadow: var(--shadow-hover);
+    margin-top: -3rem; /* Visual overlap effect */
+    position: relative;
+    z-index: 10;
+}
+
+/* ==========================================================================
+   7. SECTIONS & UTILITIES
+   ========================================================================== */
+.features, .services, .appointment {
+    padding: var(--spacer-section) 0;
+}
+
+.appointment {
+    /* Override for specific section bg */
+    background: var(--grad-primary);
+    padding-bottom: calc(var(--spacer-section) + 3rem); /* Extra space for overlapping card */
+}
+
+/* Loading Spinner */
+.loading {
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(91, 110, 225, 0.1);
+    border-top: 4px solid var(--clr-primary);
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* No Services State */
+.no-services {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--clr-border);
+}
+
+.no-services i {
+    color: var(--clr-text-light);
+    opacity: 0.5;
+}
+
+/* Footer */
+.footer {
+    background-color: #1a202c;
+    color: #cbd5e0;
+    padding: 80px 0 40px;
+}
+
+.footer h5 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.footer a {
+    color: #a0aec0;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.footer a:hover {
+    color: var(--clr-primary);
+}
+
+.footer .social-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.copyright {
+    border-top: 1px solid #2d3748;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* ==========================================================================
+   8. MEDIA QUERIES
+   ========================================================================== */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: white;
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        margin-top: 1rem;
+    }
+
+    .hero {
+        padding-top: 140px;
+        text-align: center;
+    }
+
+    .hero-image {
+        margin-top: 3rem;
+    }
+
+    .hero-image i {
+        font-size: 200px !important; /* Adjust generic icon size */
+    }
+
+    .d-flex.gap-3 {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .appointment-card {
+        padding: 1.5rem;
+        margin-top: 0;
+    }
+
+    .feature-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .display-5 {
+        font-size: 2rem; /* Bootstrap override */
+    }
+}

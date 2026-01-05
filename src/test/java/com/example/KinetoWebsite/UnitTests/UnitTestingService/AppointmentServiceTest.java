@@ -6,13 +6,12 @@ import com.example.KinetoWebsite.Model.Entity.Appointment;
 import com.example.KinetoWebsite.Model.Mapper.AppointmentMapper;
 import com.example.KinetoWebsite.Repository.AppointmentRepository;
 import com.example.KinetoWebsite.Service.AppointmentService;
-import com.example.KinetoWebsite.Service.AppointmentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
@@ -44,6 +43,11 @@ public class AppointmentServiceTest {
        sampleEntity.setId(10L);
        sampleEntity.setServiceName("Masaj cu uleiuri");
        sampleEntity.setPhoneNumber("4075541873");
-
    }
+
+   @Test
+    void getAllAppointments_ShouldReturnTrue(){
+       // arrange
+   }
+
 }
