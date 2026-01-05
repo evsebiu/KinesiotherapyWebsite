@@ -9,7 +9,7 @@ public class AppConfig {
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final String SMTP_PORT = "587";
     private static final String EMAIL_USERNAME = "evsebiu@gmail.com";
-    private static final String EMAIL_PASSWORD = "qoqpsixdyyqfpzbi"; // Use app-specific password
+    private static final String EMAIL_PASSWORD = "qoqp=iojkbnjkio8t7r6uyfgihit7r6dtyyqfpzbi"; // Use app-specific password
     private static final String ADMIN_EMAIL = "evsebiu@gmail.com";
 
     @Bean
