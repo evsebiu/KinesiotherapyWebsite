@@ -28,7 +28,6 @@ public class SecurityConfig {
                                 "/js/**",
 
                                 "/api/appointments/**",
-                                "/**",
                                 "/gdpr/**",
                                 "/anpc/**",
 
