@@ -309,14 +309,14 @@
                         <div class="col-md-4 mb-3">
                             <label for="durataServiciu" class="form-label required">Durată (minute)</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="durataServiciu" name="durataServiciu" min="1" required>
+                                <input type="number" class="form-control" id="durataServiciu" name="durataServiciu" min="0">
                                 <span class="input-group-text">min</span>
                             </div>
                             <div class="invalid-feedback">Durata este obligatorie și trebuie să fie de cel puțin 1 minut.</div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="contact" class="form-label required">Contact</label>
-                            <input type="text" class="form-control" id="contact" name="contact" required>
+                            <input type="text" class="form-control" id="contact" name="contact">
                             <div class="invalid-feedback">Contactul este obligatoriu.</div>
                         </div>
                     </div>
@@ -668,14 +668,18 @@
 }
 
     function saveService() {
-        const formData = {
-            numeServiciu: document.getElementById('numeServiciu').value.trim(),
-            descriereServiciu: document.getElementById('descriereServiciu').value.trim(),
-            pretServiciu: parseFloat(document.getElementById('pretServiciu').value),
-            durataServiciu: parseInt(document.getElementById('durataServiciu').value),
-            contact: document.getElementById('contact').value.trim(),
-            categorie: document.getElementById('categorie').value.trim()
-        };
+    // Preluăm valoarea brută pentru durată
+    const rawDuration = document.getElementById('durataServiciu').value;
+
+    const formData = {
+        numeServiciu: document.getElementById('numeServiciu').value.trim(),
+        descriereServiciu: document.getElementById('descriereServiciu').value.trim(),
+        pretServiciu: parseFloat(document.getElementById('pretServiciu').value),
+        // Dacă nu e completat, trimitem 0 sau null (depinde de backend, aici am pus 0)
+        durataServiciu: rawDuration ? parseInt(rawDuration) : 0,
+        contact: document.getElementById('contact').value.trim(),
+        categorie: document.getElementById('categorie').value.trim()
+    };
 
         const serviceId = document.getElementById('serviceId').value;
 
@@ -725,34 +729,29 @@
     }
 
     function validateForm(formData) {
-        let isValid = true;
+    let isValid = true;
 
-        // Reset validation
-        const inputs = document.querySelectorAll('#serviceForm input[required]');
-        inputs.forEach(input => {
-            input.classList.remove('is-invalid');
-        });
+    // Reset validation
+    const inputs = document.querySelectorAll('#serviceForm input');
+    inputs.forEach(input => {
+        input.classList.remove('is-invalid');
+    });
 
-        // Check required fields
-        if (!formData.numeServiciu) {
-            document.getElementById('numeServiciu').classList.add('is-invalid');
-            isValid = false;
-        }
-        if (!formData.pretServiciu || formData.pretServiciu <= 0) {
-            document.getElementById('pretServiciu').classList.add('is-invalid');
-            isValid = false;
-        }
-        if (!formData.durataServiciu || formData.durataServiciu <= 0) {
-            document.getElementById('durataServiciu').classList.add('is-invalid');
-            isValid = false;
-        }
-        if (!formData.contact) {
-            document.getElementById('contact').classList.add('is-invalid');
-            isValid = false;
-        }
-
-        return isValid;
+    // Check required fields (DOAR Nume și Preț au rămas obligatorii)
+    if (!formData.numeServiciu) {
+        document.getElementById('numeServiciu').classList.add('is-invalid');
+        isValid = false;
     }
+    if (!formData.pretServiciu || formData.pretServiciu < 0) { // Am permis 0, dar nu negativ
+        document.getElementById('pretServiciu').classList.add('is-invalid');
+        isValid = false;
+    }
+
+    // Eliminat verificarea pentru durataServiciu
+    // Eliminat verificarea pentru contact
+
+    return isValid;
+}
 
     function confirmDelete(serviceId, serviceName) {
         serviceToDeleteId = serviceId;

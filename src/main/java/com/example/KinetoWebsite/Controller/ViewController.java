@@ -60,7 +60,7 @@ public class ViewController {
         return "AdminLogin";
     }
 
-    @GetMapping("/public")
+    @GetMapping("/")
     public String publicPage(Model model) {
         model.addAttribute("pageTitle", "Kineto - Masaj Terapeutic la Domiciliu");
         return "PublicPage";

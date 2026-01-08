@@ -28,7 +28,7 @@ public class SecurityConfig {
                                 "/js/**",
 
                                 "/api/appointments/**",
-                                "/api/services/**",
+                                "/**",
 
                                 // Swagger UI and API docs
                                 "/swagger-ui.html",

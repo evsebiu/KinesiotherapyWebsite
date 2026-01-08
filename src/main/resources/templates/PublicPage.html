@@ -327,17 +327,16 @@
         <div class="row text-center mb-5">
             <div class="col-lg-8 mx-auto">
                 <h2 class="display-5 fw-bold mb-3">De ce să alegi recuperarea la domiciliu?</h2>
-                <p class="lead">Cred că fiecare pacient merită o abordare complet individualizată. Lucrând la domiciliu,
-                    am libertatea să adaptez programul de recuperare fix pe mediul tău de viață. Folosim spațiul tău,
-                    timpul tău și energia ta din acea zi pentru a obține cele mai bune rezultate, într-un cadru în care
-                    singura mea prioritate este progresul tău, fără nicio altă distragere din exterior.</p>
+                <p class="lead">Lucrând la domiciliu, am libertatea sá adaptez programul de recuperare fix pe mediul tău
+                    de viață. Folosim spațiul tău, timpul tău și energia ta din acea zi pentru a obține cele mai bune rezultate,
+                    într-un cadru în care singura mea prioritate este progresul tău, fără nicio alta distragere din exterior.</p>
             </div>
         </div>
         <div class="row g-4">
             <div class="col-12">
                 <div class="feature-card d-flex align-items-start text-start p-4">
                     <div class="feature-icon flex-shrink-0 me-4" style="margin: 0;">
-                        <i class="fas fa-home"></i>
+                        <i class="fas fa-square-plus"></i>
                     </div>
                     <div>
                         <h4 class="mb-3">Recuperare Post-Operatorie</h4>
@@ -351,11 +350,13 @@
             <div class="col-12">
                 <div class="feature-card d-flex align-items-center text-start p-4">
                     <div class="feature-icon flex-shrink-0 me-4" style="margin: 0;">
-                        <i class="fas fa-user-md"></i>
+                        <i class="fas fa-bandage"></i>
                     </div>
                     <div>
-                        <h4 class="mb-2">Terapeuți Experiențați</h4>
-                        <p class="text-muted mb-0">Echipa noastră este formată din specialiști cu experiență în kinetoterapie și masaj terapeutic, pregătiți să abordeze orice patologie.</p>
+                        <h4 class="mb-2">Reabilitare post-traumatică</h4>
+                        <p class="text-muted mb-0">După o fractură, o entorsă sau un accident, corpul are nevoie de
+                            reeducare funcțională. Te ajutăm să îți recapeți forța musculară și stabilitatea articulară
+                            prin exerciții adaptate progresiv stării tale, accelerând procesul natural de vindecare.</p>
                     </div>
                 </div>
             </div>
@@ -363,11 +364,27 @@
             <div class="col-12">
                 <div class="feature-card d-flex align-items-center text-start p-4">
                     <div class="feature-icon flex-shrink-0 me-4" style="margin: 0;">
-                        <i class="fas fa-clock"></i>
+                        <i class="fas fa-laptop"></i>
                     </div>
                     <div>
-                        <h4 class="mb-2">Program Flexibil</h4>
-                        <p class="text-muted mb-0">Lucrăm conform programărilor dumneavoastră, inclusiv în weekend, pentru a vă oferi confortul maxim și a ne adapta stilului dumneavoastră de viață.</p>
+                        <h4 class="mb-2">Soluții pentru stilul de viață sedentar (Lucru la birou)</h4>
+                        <p class="text-muted mb-0">Durerile de spate, tensiunea cervicală și amorțeala mâinilor sunt
+                            semnale de alarmă ale lucrului prelungit la birou. Nu lăsa postura incorectă să devină o
+                            afecțiune cronică. Implementăm programe de kinetoprofilaxie care combat efectele sedentarismului
+                            și îți redau confortul zilnic.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="feature-card d-flex align-items-center text-start p-4">
+                    <div class="feature-icon flex-shrink-0 me-4" style="margin: 0;">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-2">Confortul și siguranța casei tale</h4>
+                        <p class="text-muted mb-0">Fără timp pierdut în sălile de așteptare și fără efortul de a te
+                            deplasa când ai dureri. Venim noi la tine cu tot echipamentul necesar, transformând locuința
+                            ta într-un centru de recuperare modern, unde te poți concentra 100% pe progresul tău.</p>
                     </div>
                 </div>
             </div>
@@ -379,7 +396,7 @@
     <div class="container">
         <div class="row text-center mb-5">
             <div class="col-lg-8 mx-auto">
-                <h2 class="display-5 fw-bold mb-3">Serviciile Noastre</h2>
+                <h2 class="display-5 fw-bold mb-3">Serviciile mele</h2>
                 <p class="lead text-muted">Gama completă de servicii de kinetoterapie și masaj terapeutic</p>
             </div>
         </div>
@@ -565,7 +582,7 @@
     });
 
     function loadServices() {
-        console.log('Loading services from /api/public/services');
+        console.log('Loading services from /api/publicservices');
 
         fetch('/api/public/services')
             .then(response => {
@@ -596,29 +613,26 @@
 
         container.innerHTML = services.map(service => `
             <div class="col-lg-6">
-                <div class="service-card">
-                    <div class="service-header">
-                        <h4 class="mb-0">${service.numeServiciu || 'Serviciu'}</h4>
-                    </div>
-                    <div class="service-body">
-                        <div class="price-tag">
-                            ${service.pretServiciu || 0} RON
-                            ${service.durataServiciu ? ' • ' + service.durataServiciu + ' min' : ''}
-                        </div>
-                        <p class="text-muted mb-3">${service.descriereServiciu || 'Fără descriere disponibilă.'}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="fas fa-phone me-1"></i>
-                                ${service.contact || 'Contact necunoscut'}
-                            </small>
-                            <button class="btn btn-primary btn-sm" onclick="scrollToAppointment('${service.numeServiciu || ''}')">
-                                <i class="fas fa-calendar-plus me-1"></i>Programează
-                            </button>
-                        </div>
-                    </div>
+        <div class="service-card">
+            <div class="service-header">
+                <h4 class="mb-0">${service.numeServiciu || 'Serviciu'}</h4>
+            </div>
+            <div class="service-body">
+                <div class="price-tag">
+                    ${service.pretServiciu || 0} RON
+                </div>
+
+                <p class="text-muted mb-3">${service.descriereServiciu || 'Fără descriere disponibilă.'}</p>
+
+                <div class="d-flex justify-content-end align-items-center">
+                    <button class="btn btn-primary btn-sm" onclick="scrollToAppointment('${service.numeServiciu || ''}')">
+                        <i class="fas fa-calendar-plus me-1"></i>Programează
+                    </button>
                 </div>
             </div>
-        `).join('');
+        </div>
+    </div>
+`).join('');
     }
 
     function showNoServices() {
