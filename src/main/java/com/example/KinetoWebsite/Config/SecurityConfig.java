@@ -26,6 +26,7 @@ public class SecurityConfig {
                                 "/public",
                                 "/css/**",
                                 "/js/**",
+                                "/images/**",
 
                                 "/api/appointments/**",
                                 "/gdpr.html/**",
