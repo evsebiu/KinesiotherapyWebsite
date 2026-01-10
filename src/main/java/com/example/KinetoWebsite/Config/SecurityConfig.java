@@ -28,8 +28,10 @@ public class SecurityConfig {
                                 "/js/**",
 
                                 "/api/appointments/**",
-                                "/gdpr/**",
-                                "/anpc/**",
+                                "/gdpr.html/**",
+                                "/anpc.html/**",
+                                "/termeni.html",
+
 
                                 // Swagger UI and API docs
                                 "/swagger-ui.html",
