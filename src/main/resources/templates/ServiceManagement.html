@@ -372,9 +372,11 @@
     let serviceToDeleteId = null;
 
     // DOM elements
-    const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+  const serviceModalElement = document.getElementById('serviceModal');
+const serviceModal = bootstrap.Modal.getOrCreateInstance(serviceModalElement);
 
+const deleteModalElement = document.getElementById('deleteConfirmModal');
+const deleteModal = bootstrap.Modal.getOrCreateInstance(deleteModalElement);
     // API call utility
     async function apiCall(url, method = 'GET', data = null) {
         const options = {

@@ -14,6 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentServiceTest {
@@ -48,6 +53,18 @@ public class AppointmentServiceTest {
    @Test
     void getAllAppointments_ShouldReturnTrue(){
        // arrange
+
+       when(appointmentRepository.findAll()).thenReturn(List.of(sampleEntity));
+       when(appointmentMapper.toDTO(sampleEntity)).thenReturn(sampleDTO);
+
+       //act
+       List<AppointmentDTO> result = appointmentService.getAllAppointments();
+
+       //assert
+       assertFalse(result.isEmpty());
+       assertEquals(1, result.size());
+       assertEquals(sampleDTO.getPatientName(), result.get(0).getPatientName());
+       verify(appointmentRepository).findAll();
    }
 
 }
