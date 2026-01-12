@@ -52,11 +52,17 @@ public class AppointmentController {
         try{
             AppointmentDTO savedAppointment = appointmentService.createAppointment(appointmentDTO);
 
-            emailService.processAppointment(
-                    savedAppointment.getCustomerEmail(),        // Adresa de email a clientului
-                    savedAppointment.getPatientName(),  // Numele clientului
-                    savedAppointment.getDate().toString() // Data programării (convertită în String)
-            );
+            String emailDestinatar = savedAppointment.getCustomerEmail();
+
+            if (emailDestinatar != null && !emailDestinatar.isEmpty()){
+                emailService.processAppointment(
+                        emailDestinatar,
+                        savedAppointment.getPatientName(),
+                        savedAppointment.getDate().toString()
+                );
+            } else {
+                System.err.println("EMAILUL CLIENTULUI ESTE NULL");
+            }
 
             return ResponseEntity.ok(savedAppointment);
 

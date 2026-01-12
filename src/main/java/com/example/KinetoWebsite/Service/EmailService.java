@@ -63,7 +63,7 @@ public class EmailService {
 
             Message message = new MimeMessage(session);
             // Setam un nume prietenos "PhysioVanu" ca sa nu apara doar adresa de email
-            message.setFrom(new InternetAddress(username, "PhysioVanu"));
+            message.setFrom(new InternetAddress(adminEmail, "PhysioVanu"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setContent(htmlBody, "text/html; charset=utf-8");

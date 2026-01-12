@@ -20,6 +20,7 @@ public class AppointmentMapper {
         dto.setServiceName(appointment.getServiceName());
         dto.setTime(appointment.getTime());
         dto.setStatus(appointment.getStatus());
+        dto.setCustomerEmail(appointment.getCustomerEmail());
 
         return dto;
     }
@@ -36,7 +37,7 @@ public class AppointmentMapper {
         appointment.setServiceName(dto.getServiceName());
         appointment.setTime(dto.getTime());
         appointment.setStatus(dto.getStatus() != null ? dto.getStatus() : "NOU");
-
+        appointment.setCustomerEmail(dto.getCustomerEmail());
         return appointment;
     }
 }

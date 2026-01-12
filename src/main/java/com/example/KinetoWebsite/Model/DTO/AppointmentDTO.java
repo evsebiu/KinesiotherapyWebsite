@@ -32,7 +32,7 @@ public class AppointmentDTO {
 
     @NotNull
     @Email
-    private String customerEmail;
+    String customerEmail;
 
     private String additionalInfo;
 
