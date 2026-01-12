@@ -67,17 +67,22 @@ public class ViewController {
     }
 
     @GetMapping("/gdpr")
-    public String gdprPage(){
+    public String gdprPage() {
         return "static/gdpr";
     }
 
     @GetMapping("/anpc")
-    public String anpcPage(){
+    public String anpcPage() {
         return "static/anpc";
     }
 
     @GetMapping("/termeni")
-        public String termsPage(){
-            return "static/termeni";
-        }
+    public String termsPage() {
+        return "static/termeni";
+    }
+
+    @GetMapping("/cookies")
+    public String cookiesPage(){
+        return "static/cookies";
+    }
 }

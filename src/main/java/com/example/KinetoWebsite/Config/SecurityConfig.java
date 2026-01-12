@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 "/gdpr.html/**",
                                 "/anpc.html/**",
                                 "/termeni.html",
+                                "cookies.html/**",
 
 
                                 // Swagger UI and API docs
