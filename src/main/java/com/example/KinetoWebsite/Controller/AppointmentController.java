@@ -5,7 +5,6 @@ import com.example.KinetoWebsite.Service.AppointmentService;
 import com.example.KinetoWebsite.Service.EmailService;
 import com.example.KinetoWebsite.Service.RecaptchaService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,22 +52,11 @@ public class AppointmentController {
         try{
             AppointmentDTO savedAppointment = appointmentService.createAppointment(appointmentDTO);
 
-            //send notification email to admin.
-            String subject = "Programare noua: " + savedAppointment.getPatientName();
-            String body = String.format(
-                    "Ai o programare noua!:\n\n" +
-                            "Nume: %s\n" +
-                            "Telefon: %s\n" +
-                            "Serviciu %s\n" +
-                            "Data: %s\n" +
-                            "Informatii aditionale: %s\n",
-                    savedAppointment.getPatientName(),
-                    savedAppointment.getPhoneNumber(),
-                    savedAppointment.getServiceName(),
-                    savedAppointment.getDate(),
-                    savedAppointment.getAdditionalInfo()
+            emailService.processAppointment(
+                    savedAppointment.getCustomerEmail(),        // Adresa de email a clientului
+                    savedAppointment.getPatientName(),  // Numele clientului
+                    savedAppointment.getDate().toString() // Data programării (convertită în String)
             );
-            //emailService.sendAdminNotification(subject, body);
 
             return ResponseEntity.ok(savedAppointment);
 

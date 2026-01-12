@@ -18,5 +18,4 @@ public interface AppointmentService {
     AppointmentDTO createAppointment(AppointmentDTO appointmentDTO);
     void deleteAppointment(Long id);
     AppointmentDTO updateAppointment(Long id, AppointmentDTO appointmentDTO);
-    void sendAdminNotification(AppointmentDTO appointmentDTO);
 }

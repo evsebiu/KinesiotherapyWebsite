@@ -50,31 +50,7 @@ public class AppointmentServiceImpl implements AppointmentService{
         Appointment appointmentDetails = appointmentMapper.toEntity(appointmentDTO);
         Appointment savedAppointment = appointmentRepository.save(appointmentDetails);
 
-        sendAdminNotification(appointmentDTO);
         return appointmentMapper.toDTO(savedAppointment);
-    }
-
-    @Override
-    public void sendAdminNotification(AppointmentDTO appointmentDTO){
-        String subject = "Appointment confirmation " + appointmentDTO.getPatientName();
-
-        String body = String.format(
-                "Programare noua pe website! \n" +
-                        "\nVerifica admin dashboard - programari\n\n" +
-                        "Numele clientului:%s\n" +
-                        "Serviciul ales: %s\n" +
-                        "Numar de telefon: %s\n" +
-                        "Informatii aditionale introduse de client: %s\n" +
-                        "Data selectata de client: %s\n\n" +
-                        "Nu uita sa iti manageriezi starea programarii in dashboard.\n\n"+
-                        "\napp powered by @evsebiu",
-                appointmentDTO.getPatientName(),
-                appointmentDTO.getServiceName(),
-                appointmentDTO.getPhoneNumber(),
-                appointmentDTO.getAdditionalInfo(),
-                appointmentDTO.getDate()
-        );
-        emailService.sendAdminNotification(subject,body);
     }
 
     @Override

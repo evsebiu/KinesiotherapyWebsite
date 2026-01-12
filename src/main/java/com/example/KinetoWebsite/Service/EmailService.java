@@ -1,37 +1,58 @@
 package com.example.KinetoWebsite.Service;
 
-
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.util.Properties;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Service
-
 public class EmailService {
+
+    // --- Injectare variabile din application.properties ---
+    @Value("${spring.mail.host}")
     private String host;
+
+    @Value("${spring.mail.port}")
     private String port;
+
+    @Value("${spring.mail.username}")
     private String username;
+
+    @Value("${spring.mail.password}")
     private String password;
+
+    @Value("${spring.mail.admin.email}")
     private String adminEmail;
-    private boolean auth;
 
+    /**
+     * Metoda principala care trebuie apelata din Controller.
+     * Trimite confirmare la client si notificare la admin.
+     */
+    public void processAppointment(String clientEmail, String clientName, String date) {
+        // 1. Trimite email catre CLIENT
+        String clientSubject = "Confirmare Programare - PhysioVanu";
+        String clientBody = buildClientEmailBody(clientName, date);
+        sendEmailInternal(clientEmail, clientSubject, clientBody);
 
-    public void sendAdminNotification(String subject, String body) {
+        // 2. Trimite email catre ADMIN (Terapeut)
+        String adminSubject = "Programare Noua - " + clientName;
+        String adminBody = buildAdminEmailBody(clientName, clientEmail, date);
+        // Folosim adresa de admin incarcata din fisier
+        sendEmailInternal(adminEmail, adminSubject, adminBody);
+    }
+
+    /**
+     * Metoda generica de trimitere email (privata, folosita doar intern)
+     */
+    private void sendEmailInternal(String to, String subject, String htmlBody) {
         try {
             Properties props = new Properties();
             props.put("mail.smtp.host", host);
             props.put("mail.smtp.port", port);
-            props.put("mail.smtp.auth", String.valueOf(auth));
+            props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
 
             Session session = Session.getInstance(props, new Authenticator() {
@@ -41,47 +62,44 @@ public class EmailService {
             });
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(adminEmail)); // Send to ADMIN
-            message.setSubject(subject);
-            message.setText(body);
-
-            Transport.send(message);
-            System.out.println("Admin notification sent successfully to: " + adminEmail);
-
-        } catch (Exception e) {
-            System.err.println("Failed to send admin notification: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    //html send email method
-    public void sendHtmlNotification(String subject, String htmlBody){
-        try{
-            Properties props = new Properties();
-            props.put("mail.smtp.host", host);
-            props.put("mail.smtp.port", port);
-            props.put("mail.smtp.auth", String.valueOf(auth));
-            props.put("mail.smtp.starttls.enable", "true");
-
-            Session session = Session.getInstance(props, new Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication(){
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(adminEmail));
+            // Setam un nume prietenos "PhysioVanu" ca sa nu apara doar adresa de email
+            message.setFrom(new InternetAddress(username, "PhysioVanu"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setContent(htmlBody, "text/html; charset=utf-8");
 
             Transport.send(message);
-            System.out.println("HTML notification sent successfully to: " + adminEmail);
-        } catch (Exception e){
-            System.err.println("Failed to send HTML notification " + e.getMessage());
+            System.out.println("Email trimis cu succes catre: " + to);
+
+        } catch (Exception e) {
+            System.err.println("EROARE la trimiterea emailului catre " + to + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    // --- Metode ajutatoare pentru construirea textului HTML ---
+
+    private String buildClientEmailBody(String name, String date) {
+        return "<div style='font-family: Arial, sans-serif; color: #333;'>"
+                + "<h2>Salut " + name + ",</h2>"
+                + "<p>Programarea ta a fost înregistrată cu succes.</p>"
+                + "<p><b>Data:</b> " + date + "</p>"
+                + "<br>"
+                + "<p>Iti  multumesc!</p>"
+                + "<p><i>Echipa PhysioVanu</i></p>"
+                + "</div>";
+    }
+
+    private String buildAdminEmailBody(String clientName, String clientEmail, String date) {
+        return "<div style='font-family: Arial, sans-serif; color: #333; border: 1px solid #ccc; padding: 10px;'>"
+                + "<h2 style='color: #d9534f;'>Programare Nouă!</h2>"
+                + "<p>Un client nou s-a programat pe site:</p>"
+                + "<ul>"
+                + "<li><b>Nume:</b> " + clientName + "</li>"
+                + "<li><b>Email:</b> " + clientEmail + "</li>"
+                + "<li><b>Data:</b> " + date + "</li>"
+                + "</ul>"
+                + "<p>Verifică agenda pentru detalii.</p>"
+                + "</div>";
     }
 }
