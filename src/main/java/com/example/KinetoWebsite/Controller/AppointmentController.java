@@ -52,14 +52,8 @@ public class AppointmentController {
         try{
             AppointmentDTO savedAppointment = appointmentService.createAppointment(appointmentDTO);
 
-            String emailDestinatar = savedAppointment.getCustomerEmail();
-
-            if (emailDestinatar != null && !emailDestinatar.isEmpty()){
-                emailService.processAppointment(
-                        emailDestinatar,
-                        savedAppointment.getPatientName(),
-                        savedAppointment.getDate().toString()
-                );
+            if (savedAppointment != null && !savedAppointment.getCustomerEmail().isEmpty()){
+                emailService.sendAppointmentConfirmation(savedAppointment);
             } else {
                 System.err.println("EMAILUL CLIENTULUI ESTE NULL");
             }

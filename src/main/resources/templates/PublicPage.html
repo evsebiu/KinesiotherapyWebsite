@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+
         /* --- CSS NOU PENTRU FOOTER ȘI COOKIES (Adaugă la finalul stilurilor existente) --- */
   .main-footer {
       background-color: #1e293b;
@@ -341,6 +342,57 @@
           .feature-card, .appointment-card {
               padding: 2rem;
           }
+          #appointmentForm .form-control,
+    #appointmentForm .form-select {
+        font-size: 16px; /* Text lizibil fără zoom */
+        padding: 12px 15px; /* Spațiu mai mare pentru atingere */
+        height: auto; /* Lasă înălțimea să se adapteze */
+        border-radius: 10px;
+        margin-bottom: 5px; /* Spațiu mic între input și label-ul următor */
+        background-color: #fcfcfc;
+    }
+
+    /* 2. Etichetele (Label) mai vizibile */
+    #appointmentForm .form-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #4a5568;
+    }
+
+    /* 3. Checkbox-uri "prietenoase cu degetele" */
+    #appointmentForm .form-check {
+        background-color: #f8f9fa; /* Fundal gri deschis */
+        padding: 15px; /* Zonă mare de atingere */
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    #appointmentForm .form-check-input {
+        width: 1.4em; /* Pătrățelul mai mare */
+        height: 1.4em;
+        margin-top: 0;
+        margin-right: 12px;
+        flex-shrink: 0; /* Să nu se strivească */
+    }
+
+    #appointmentForm .form-check-label {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        padding-top: 2px;
+    }
+
+    /* 4. Butonul de trimitere masiv și ușor de apăsat */
+    #appointmentForm button[type="submit"] {
+        padding: 15px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        margin-top: 10px;
+    }
       }
 
       /* Loading Animation */
@@ -379,6 +431,125 @@
           color: var(--text-light);
           margin-bottom: 1.5rem;
       }
+        html, body {
+    overflow-x: hidden; /* Blochează scroll-ul orizontal */
+    width: 100%;
+    position: relative;
+}
+
+/* Asigură-te că rândurile Bootstrap nu ies din ecran */
+.row {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
+
+.container, .container-fluid {
+    overflow-x: hidden; /* Siguranță suplimentară */
+    padding-right: 15px; /* Refacem padding-ul standard Bootstrap */
+    padding-left: 15px;
+}
+
+/* --- OPTIMIZĂRI SPECIFICE PENTRU MOBIL --- */
+@media (max-width: 768px) {
+    /* 1. Ajustare Hero Section (prea înaltă pe mobil) */
+    .hero {
+        padding: 100px 0 50px; /* Reducem padding-ul sus/jos */
+        text-align: center; /* Centrăm textul pe mobil pentru impact vizual mai bun */
+    }
+
+    .hero h1 {
+        font-size: 2.2rem; /* Micșorăm titlul */
+        line-height: 1.2;
+    }
+
+    .hero p.lead {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* 2. Ajustare butoane Hero (să fie full-width pe mobil) */
+    .hero .d-flex {
+        flex-direction: column; /* Butoanele unul sub altul */
+        width: 100%;
+    }
+
+    .hero .btn {
+        width: 100%; /* Buton cât tot ecranul */
+        margin-bottom: 10px;
+    }
+
+    /* 3. Ajustare Imagine/Icon Hero */
+    .hero-image {
+        margin-top: 2rem !important;
+    }
+
+    .hero-image i {
+        font-size: 150px !important; /* Micșorăm mâna uriașă de la 300px la 150px */
+    }
+
+    /* 4. Ajustare Carduri Servicii și Features */
+    .feature-card, .service-card, .appointment-card {
+        padding: 1.5rem; /* Mai puțin spațiu interior */
+        margin-bottom: 1rem;
+    }
+
+    .service-bg-icon {
+        font-size: 80px; /* Micșorăm iconița de fundal din carduri */
+    }
+
+    /* 5. Ajustare Navigare */
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+
+    /* 6. Footer mai compact */
+    .main-footer {
+        padding-top: 2rem;
+        text-align: center; /* Centrăm footer-ul pe mobil */
+    }
+
+    .footer-links li {
+        display: inline-block; /* Linkurile pe orizontală sau blocuri mai mici */
+        margin: 0 5px;
+    }
+
+    .col-lg-3.mb-4 h5, .col-lg-2 h5, .col-lg-4 h5 {
+        margin-top: 1.5rem; /* Spațiere între secțiuni în footer */
+    }
+
+    /* 7. Centrare butoane social media în footer */
+    .main-footer .d-flex.gap-3 {
+        justify-content: center;
+    }
+}
+        /* ADAPTARE CARD SERVICII PENTRU MOBIL */
+    @media (max-width: 768px) {
+        .service-header {
+            /* Activăm Flexbox pentru a le aranja vertical */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .service-price-badge {
+            /* Anulăm poziționarea absolută care cauza suprapunerea */
+            position: relative;
+            top: auto;
+            right: auto;
+
+            /* Adăugăm spațiu sub preț ca să nu fie lipit de titlu */
+            margin-bottom: 15px;
+
+            /* Opțional: ajustare vizuală */
+            align-self: flex-start;
+        }
+
+        /* Ne asigurăm că titlul are loc să respire */
+        .service-title {
+            width: 100%;
+            margin-top: 0;
+        }
+    }
     </style>
 </head>
 <body>
@@ -625,18 +796,18 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="name" class="form-label">Nume complet *</label>
-                                <input type="text" class="form-control" id="name" required>
+                                <input type="text" class="form-control" id="name" autocomplete="name" placeholder="Ex: Ion Popescu" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="phone" class="form-label">Număr de telefon *</label>
-                                <input type="tel" class="form-control" id="phone" required>
+                                <input type="tel" class="form-control" id="phone" autocomplete="tel" placeholder="07xx xxx xxx" required>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="email" placeholder="nume@exemplu.com" required>
+                                <input type="email" class="form-control" id="email" autocomplete="email" placeholder="nume@exemplu.com" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="service" class="form-label">Serviciu dorit *</label>
@@ -649,7 +820,14 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="date" class="form-label">Dată preferată</label>
-                                <input type="date" class="form-control" id="date">
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        id="date"
+                                        placeholder="Apasă aici pentru a selecta data dorită"
+                                        onfocus="(this.type='date')"
+                                        onblur="if(!this.value)this.type='text'"
+                                >
                             </div>
                         </div>
 
