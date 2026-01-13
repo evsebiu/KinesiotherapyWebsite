@@ -1,7 +1,6 @@
 package com.example.KinetoWebsite.Service;
 
 import com.example.KinetoWebsite.Model.DTO.AppointmentDTO;
-import com.example.KinetoWebsite.Model.Entity.Appointment;
 
 import java.util.List;
 import java.util.Optional;

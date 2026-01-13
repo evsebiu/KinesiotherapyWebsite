@@ -33,12 +33,16 @@ public class EmailService {
      * Trimite confirmare la client si notificare la admin.
      */
     public void sendAppointmentConfirmation(AppointmentDTO appointment) {
-        // 1. Trimite email catre CLIENT
-        String clientSubject = "Confirmare Programare - PhysioVanu";
-        String clientBody = buildClientEmailBody(appointment);
-        sendEmailInternal(appointment.getCustomerEmail(), clientSubject, clientBody);
+        // 1. Trimite email catre CLIENT - DOAR DACĂ ARE EMAIL VALID
+        // Adăugăm această verificare de siguranță
+        if (appointment.getCustomerEmail() != null && !appointment.getCustomerEmail().isEmpty()) {
+            String clientSubject = "Confirmare Programare - PhysioVanu";
+            String clientBody = buildClientEmailBody(appointment);
+            sendEmailInternal(appointment.getCustomerEmail(), clientSubject, clientBody);
+        }
 
-        // 2. Trimite email catre ADMIN (Terapeut)
+        // 2. Trimite email catre ADMIN (Terapeut) - ÎNTOTDEAUNA
+        // Această parte se va executa acum chiar dacă clientul nu are email
         String adminSubject = "Programare Nouă (" + appointment.getServiceName() + ") - " + appointment.getPatientName();
         String adminBody = buildAdminEmailBody(appointment);
         sendEmailInternal(adminEmail, adminSubject, adminBody);
@@ -121,39 +125,44 @@ public class EmailService {
 
     // --- HTML PENTRU ADMIN (Include toate detaliile tehnice) ---
     private String buildAdminEmailBody(AppointmentDTO app) {
+        // Verificăm dacă avem email, altfel scriem "Nu are email"
+        String clientEmailDisplay = (app.getCustomerEmail() != null && !app.getCustomerEmail().isEmpty())
+                ? "<a href='mailto:" + app.getCustomerEmail() + "'>" + app.getCustomerEmail() + "</a>"
+                : "Nu are email (Contact telefonic)";
+
         String serviceName = app.getServiceName() != null ? app.getServiceName() : "Nespecificat";
         String extraInfo = app.getAdditionalInfo() != null ? app.getAdditionalInfo() : "Fără mesaj adițional";
 
         return """
-            <div style='font-family: Arial, sans-serif; color: #333; border: 1px solid #ccc; padding: 20px; max-width: 600px;'>
-                <h2 style='color: #d9534f; border-bottom: 2px solid #d9534f; padding-bottom: 10px;'>🔔 Programare Nouă!</h2>
-                
-                <p>Un client nou a completat formularul pe site.</p>
-                
-                <h3>Detalii Client:</h3>
-                <ul>
-                    <li><b>Nume:</b> %s</li>
-                    <li><b>Telefon:</b> <a href='tel:%s'>%s</a></li>
-                    <li><b>Email:</b> <a href='mailto:%s'>%s</a></li>
-                </ul>
+        <div style='font-family: Arial, sans-serif; color: #333; border: 1px solid #ccc; padding: 20px; max-width: 600px;'>
+            <h2 style='color: #d9534f; border-bottom: 2px solid #d9534f; padding-bottom: 10px;'>🔔 Programare Nouă!</h2>
+            
+            <p>Un client nou a completat formularul pe site.</p>
+            
+            <h3>Detalii Client:</h3>
+            <ul>
+                <li><b>Nume:</b> %s</li>
+                <li><b>Telefon:</b> <a href='tel:%s'>%s</a></li>
+                <li><b>Email:</b> %s</li> 
+            </ul>
 
-                <h3>Detalii Serviciu:</h3>
-                <ul>
-                    <li><b>Serviciu ales:</b> %s</li>
-                    <li><b>Data preferată:</b> %s</li>
-                </ul>
+            <h3>Detalii Serviciu:</h3>
+            <ul>
+                <li><b>Serviciu ales:</b> %s</li>
+                <li><b>Data preferată:</b> %s</li>
+            </ul>
 
-                <div style='background-color: #f8d7da; padding: 15px; margin-top: 15px; border-radius: 5px;'>
-                    <b>Mesaj client / Detalii extra:</b><br>
-                    <i>%s</i>
-                </div>
-
-                <p style='margin-top: 20px;'>Te rog să contactezi clientul pentru confirmare.</p>
+            <div style='background-color: #f8d7da; padding: 15px; margin-top: 15px; border-radius: 5px;'>
+                <b>Mesaj client / Detalii extra:</b><br>
+                <i>%s</i>
             </div>
-            """.formatted(
+
+            <p style='margin-top: 20px;'>Te rog să contactezi clientul telefonic pentru confirmare.</p>
+        </div>
+        """.formatted(
                 app.getPatientName(),
                 app.getPhoneNumber(), app.getPhoneNumber(),
-                app.getCustomerEmail(), app.getCustomerEmail(),
+                clientEmailDisplay, // Aici folosim variabila calculată mai sus
                 serviceName,
                 app.getDate().toString(),
                 extraInfo

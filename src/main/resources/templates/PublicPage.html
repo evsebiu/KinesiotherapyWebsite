@@ -807,7 +807,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="email" autocomplete="email" placeholder="nume@exemplu.com" required>
+                                <input type="email" class="form-control" id="email" autocomplete="email" placeholder="nume@exemplu.com">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="service" class="form-label">Serviciu dorit *</label>
@@ -1067,7 +1067,7 @@
 
             // Preluăm datele din formular
             const formData = {
-                clientName: document.getElementById('name').value,
+                clientName: document.getElementById('name').value || null,
                 clientPhone: document.getElementById('phone').value,
                 clientEmail: document.getElementById('email').value, // <--- NOU: Preluăm emailul
                 serviceName: document.getElementById('service').value,
@@ -1076,7 +1076,7 @@
             };
 
             // Validare simplă
-            if (!formData.clientName || !formData.clientPhone || !formData.serviceName || !formData.clientEmail) {
+            if (!formData.clientName || !formData.clientPhone || !formData.serviceName) {
                 alert('Vă rugăm să completați toate câmpurile obligatorii (Nume, Telefon, Email, Serviciu)!');
                 return;
             }

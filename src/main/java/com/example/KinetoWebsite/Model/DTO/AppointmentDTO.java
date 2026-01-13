@@ -30,7 +30,7 @@ public class AppointmentDTO {
     @FutureOrPresent(message = "Appointment date must be today or in the future")
     private LocalDate date;
 
-    @NotNull
+
     @Email
     String customerEmail;
 
