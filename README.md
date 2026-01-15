@@ -11,7 +11,7 @@
 
 ---
 
-Temporary website link:https://kinesiotherapywebsite.onrender.com
+Temporary website link: www.physiovanu.ro
 
 ## 🌟 Introduction
 
