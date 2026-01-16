@@ -3,236 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionare Servicii - Kineto Admin</title>
+    <title>Servicii - Kineto Admin</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary-color: #667eea; --secondary-color: #764ba2; --success-color: #28a745; --danger-color: #dc3545; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; }
-        .sidebar { min-height: 100vh; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); }
-        .sidebar .nav-link { color: #fff; margin: 5px 0; border-radius: 5px; }
-        .sidebar .nav-link:hover { background: rgba(255,255,255,0.1); }
-        .service-card { border-left: 4px solid var(--primary-color); margin-bottom: 1.5rem; transition: transform 0.2s; }
-        .service-card:hover { transform: translateY(-5px); }
-        .loading-spinner { display: flex; justify-content: center; padding: 3rem; }
-        .alert-container { position: fixed; top: 20px; right: 20px; z-index: 9999; width: 350px; }
+        :root {
+            --primary: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --sidebar-width: 260px;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--light); color: var(--dark); overflow-x: hidden; }
+
+        /* Sidebar Copy */
+        .sidebar { width: var(--sidebar-width); background: #ffffff; border-right: 1px solid #e2e8f0; position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000; transition: transform 0.3s ease; }
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; transition: margin-left 0.3s ease; }
+        @media (max-width: 991.98px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+        }
+
+        /* Card Custom Styles */
+        .service-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary);
+        }
+
+        .card-header-custom {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(255,255,255,0) 100%);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge-custom {
+            padding: 0.5em 0.8em;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border-radius: 8px;
+        }
+
+        /* Skeleton */
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; color: transparent !important; border-radius: 4px; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .toast-container { z-index: 2000; }
     </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <nav th:replace="~{AdminDashboard :: sidebar('services')}"></nav>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            <div id="alertContainer" class="alert-container"></div>
+<nav class="navbar navbar-light bg-white border-bottom d-lg-none sticky-top px-3">
+    <a class="navbar-brand fw-bold text-primary" href="#"><i class="fas fa-spa me-2"></i>PhysioVanu</a>
+    <button class="btn btn-light" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+</nav>
 
-            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-                <h1 class="h2 text-primary"><i class="fas fa-spa me-2"></i>Gestionare Servicii</h1>
-                <button class="btn btn-primary" onclick="openAddModal()"><i class="fas fa-plus me-1"></i>Adaugă Serviciu</button>
+<nav th:replace="~{AdminDashboard :: sidebar('services')}"></nav>
+
+<main class="main-content">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Servicii Oferite</h2>
+            <p class="text-muted mb-0">Gestionează lista de tratamente și prețurile.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Caută serviciu...">
             </div>
-
-            <div class="row" id="servicesContainer">
-                <div class="col-12"><div class="loading-spinner"><div class="spinner-border text-primary"></div></div></div>
-            </div>
-        </main>
+            <button class="btn btn-primary shadow-sm text-nowrap" onclick="ServicesApp.openModal()">
+                <i class="fas fa-plus me-2"></i>Adaugă
+            </button>
+        </div>
     </div>
-</div>
+
+    <div class="row g-4" id="servicesGrid">
+        <div class="col-md-6 col-lg-4 skeleton-item">
+            <div class="service-card p-4">
+                <div class="skeleton mb-3" style="height: 24px; width: 60%;"></div>
+                <div class="skeleton mb-2" style="height: 16px; width: 100%;"></div>
+                <div class="skeleton mb-4" style="height: 16px; width: 80%;"></div>
+                <div class="d-flex gap-2">
+                    <div class="skeleton" style="height: 30px; width: 60px;"></div>
+                    <div class="skeleton" style="height: 30px; width: 60px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="emptyState" class="text-center py-5 d-none">
+        <div class="bg-light rounded-circle d-inline-flex p-3 mb-3">
+            <i class="fas fa-box-open fa-2x text-muted"></i>
+        </div>
+        <h6 class="text-muted">Nu au fost găsite servicii.</h6>
+    </div>
+
+</main>
 
 <div class="modal fade" id="serviceModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title" id="serviceModalTitle">Adaugă Serviciu</h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalTitle">Serviciu Nou</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pt-4">
                 <form id="serviceForm">
                     <input type="hidden" id="serviceId">
                     <div class="mb-3">
-                        <label class="form-label">Nume Serviciu *</label>
-                        <input type="text" class="form-control" id="numeServiciu" required>
+                        <label class="form-label small fw-bold text-muted">Nume Serviciu *</label>
+                        <input type="text" class="form-control" id="srvName" required>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Preț (RON) *</label>
-                            <input type="number" class="form-control" id="pretServiciu" min="0" required>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-muted">Preț (RON) *</label>
+                            <input type="number" class="form-control" id="srvPrice" min="0" step="1" required>
+                            <div class="form-text" style="font-size: 0.75rem;">Fără zecimale (ex: 150)</div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Durată (min) *</label>
-                            <input type="number" class="form-control" id="durataServiciu" min="0" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Contact</label>
-                            <input type="text" class="form-control" id="contact">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-muted">Durată (min) *</label>
+                            <input type="number" class="form-control" id="srvDuration" min="5" step="5" required>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Descriere</label>
-                        <textarea class="form-control" id="descriereServiciu" rows="3"></textarea>
+                        <label class="form-label small fw-bold text-muted">Descriere</label>
+                        <textarea class="form-control" id="srvDesc" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Contact / Notă Internă</label>
+                        <input type="text" class="form-control" id="srvContact">
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
-                <button type="button" class="btn btn-primary" onclick="saveService()">Salvează</button>
+            <div class="modal-footer border-top-0 pt-0 pb-4">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Anulează</button>
+                <button type="button" class="btn btn-primary px-4" onclick="ServicesApp.save()">Salvează</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header text-white bg-danger">
-                <h5 class="modal-title">Confirmă Ștergerea</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">Sigur vrei să ștergi serviciul <strong id="deleteName"></strong>?</div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nu</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Da, Șterge</button>
-            </div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMsg"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let allServices = [];
-    let editMode = false;
-    let deleteId = null;
-    const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    const ServicesApp = {
+        data: { list: [] },
+        modal: null,
+        toast: null,
 
-    document.addEventListener('DOMContentLoaded', () => {
-        loadServices();
-        document.getElementById('confirmDeleteBtn').addEventListener('click', executeDelete);
-    });
+        init() {
+            // Sidebar Mobile
+            const toggle = document.getElementById('sidebarToggle');
+            if(toggle) toggle.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('show'));
 
-    async function apiCall(url, method = 'GET', data = null) {
-        const options = {
-            method,
-            headers: { 'Content-Type': 'application/json' }
-        };
-        if (data) options.body = JSON.stringify(data);
+            this.modal = new bootstrap.Modal(document.getElementById('serviceModal'));
+            this.toast = new bootstrap.Toast(document.getElementById('liveToast'));
 
-        try {
-            const res = await fetch(url, options);
-            if (res.redirected && res.url.includes('/login')) {
-                window.location.href = '/login';
+            this.loadServices();
+
+            document.getElementById('searchInput').addEventListener('input', () => this.render());
+        },
+
+        async loadServices() {
+            try {
+                const res = await fetch('/api/admin/services');
+                if(!res.ok) throw new Error("Eroare rețea");
+                this.data.list = await res.json();
+                this.render();
+            } catch(e) {
+                console.error(e);
+                this.showToast("Nu s-au putut încărca serviciile.", 'danger');
+            }
+        },
+
+        render() {
+            const container = document.getElementById('servicesGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = this.data.list.filter(s =>
+                s.numeServiciu.toLowerCase().includes(search) ||
+                (s.descriereServiciu || '').toLowerCase().includes(search)
+            );
+
+            if(filtered.length === 0) {
+                container.innerHTML = '';
+                document.getElementById('emptyState').classList.remove('d-none');
                 return;
             }
-            if (!res.ok) throw new Error(`Eroare ${res.status}: ${await res.text()}`);
-            if (res.status === 204) return null;
-            return await res.json();
-        } catch (e) {
-            showAlert(e.message, 'danger');
-            console.error(e);
-            throw e;
-        }
-    }
 
-    async function loadServices() {
-        try {
-            allServices = await apiCall('/api/admin/services');
-            renderServices(allServices);
-        } catch(e) {}
-    }
+            document.getElementById('emptyState').classList.add('d-none');
 
-    function renderServices(list) {
-        const container = document.getElementById('servicesContainer');
-        if (!list || list.length === 0) {
-            container.innerHTML = '<div class="col-12 text-center text-muted">Nu există servicii.</div>';
-            return;
-        }
-        container.innerHTML = list.map(s => `
-            <div class="col-md-6 col-lg-4">
-                <div class="card service-card h-100 p-3">
-                    <h5>${escapeHtml(s.numeServiciu)}</h5>
-                    <p class="text-muted small mb-2">${escapeHtml(s.descriereServiciu)}</p>
-                    <div class="d-flex gap-2 mb-2">
-                        <span class="badge bg-success">${s.pretServiciu} RON</span>
-                        <span class="badge bg-primary">${s.durataServiciu} min</span>
-                    </div>
-                    <div class="mt-auto pt-3 border-top">
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick="openEdit(${s.id})">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="openDelete(${s.id}, '${escapeHtml(s.numeServiciu)}')">Șterge</button>
+            container.innerHTML = filtered.map(s => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card">
+                        <div class="card-header-custom d-flex justify-content-between align-items-start">
+                            <h5 class="fw-bold mb-0 text-dark">${this.escape(s.numeServiciu)}</h5>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                    <li><button class="dropdown-item" onclick="ServicesApp.edit(${s.id})"><i class="fas fa-edit me-2 text-primary"></i>Editează</button></li>
+                                    <li><button class="dropdown-item text-danger" onclick="ServicesApp.delete(${s.id})"><i class="fas fa-trash-alt me-2"></i>Șterge</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0 d-flex flex-column flex-grow-1">
+                            <div class="mb-3 mt-3">
+                                <span class="badge badge-custom bg-success bg-opacity-10 text-success me-2">
+                                    <i class="fas fa-tag me-1"></i>${s.pretServiciu} RON
+                                </span>
+                                <span class="badge badge-custom bg-primary bg-opacity-10 text-primary">
+                                    <i class="far fa-clock me-1"></i>${s.durataServiciu} min
+                                </span>
+                            </div>
+                            <p class="text-muted small flex-grow-1">${this.escape(s.descriereServiciu || 'Fără descriere.')}</p>
+                            <div class="border-top pt-3 mt-2">
+                                <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Contact: ${this.escape(s.contact || '-')}</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
-    }
+            `).join('');
+        },
 
-    function openAddModal() {
-        editMode = false;
-        document.getElementById('serviceForm').reset();
-        document.getElementById('serviceId').value = '';
-        document.getElementById('serviceModalTitle').innerText = 'Adaugă Serviciu';
-        serviceModal.show();
-    }
+        openModal() {
+            document.getElementById('serviceForm').reset();
+            document.getElementById('serviceId').value = '';
+            document.getElementById('modalTitle').textContent = 'Serviciu Nou';
+            this.modal.show();
+        },
 
-    function openEdit(id) {
-        const s = allServices.find(x => x.id === id);
-        if(!s) return;
-        editMode = true;
-        document.getElementById('serviceId').value = s.id;
-        document.getElementById('numeServiciu').value = s.numeServiciu;
-        document.getElementById('pretServiciu').value = s.pretServiciu;
-        document.getElementById('durataServiciu').value = s.durataServiciu;
-        document.getElementById('contact').value = s.contact;
-        document.getElementById('descriereServiciu').value = s.descriereServiciu;
-        document.getElementById('serviceModalTitle').innerText = 'Modifică Serviciu';
-        serviceModal.show();
-    }
+        edit(id) {
+            const s = this.data.list.find(item => item.id === id);
+            if(!s) return;
 
-    async function saveService() {
-        const id = document.getElementById('serviceId').value;
-        const data = {
-            numeServiciu: document.getElementById('numeServiciu').value,
-            pretServiciu: parseInt(document.getElementById('pretServiciu').value), // Integer pt backend
-            durataServiciu: parseInt(document.getElementById('durataServiciu').value),
-            contact: document.getElementById('contact').value,
-            descriereServiciu: document.getElementById('descriereServiciu').value
-        };
+            document.getElementById('serviceId').value = s.id;
+            document.getElementById('srvName').value = s.numeServiciu;
+            document.getElementById('srvPrice').value = s.pretServiciu;
+            document.getElementById('srvDuration').value = s.durataServiciu;
+            document.getElementById('srvDesc').value = s.descriereServiciu || '';
+            document.getElementById('srvContact').value = s.contact || '';
 
-        const url = editMode ? `/api/admin/services/${id}` : '/api/admin/services';
-        const method = editMode ? 'PUT' : 'POST';
+            document.getElementById('modalTitle').textContent = 'Editează Serviciu';
+            this.modal.show();
+        },
 
-        try {
-            await apiCall(url, method, data);
-            serviceModal.hide();
-            showAlert('Salvat cu succes!', 'success');
-            loadServices();
-        } catch(e) {}
-    }
+        async save() {
+            const id = document.getElementById('serviceId').value;
+            // IMPORTANT: ParseInt pentru a evita erori 400 de la backend
+            const payload = {
+                numeServiciu: document.getElementById('srvName').value,
+                pretServiciu: parseInt(document.getElementById('srvPrice').value) || 0,
+                durataServiciu: parseInt(document.getElementById('srvDuration').value) || 0,
+                descriereServiciu: document.getElementById('srvDesc').value,
+                contact: document.getElementById('srvContact').value
+            };
 
-    function openDelete(id, name) {
-        deleteId = id;
-        document.getElementById('deleteName').innerText = name;
-        deleteModal.show();
-    }
+            // Validare simplă
+            if(!payload.numeServiciu || payload.pretServiciu < 0) {
+                alert("Verifică numele și prețul!");
+                return;
+            }
 
-    async function executeDelete() {
-        if(!deleteId) return;
-        try {
-            await apiCall(`/api/admin/services/${deleteId}`, 'DELETE');
-            deleteModal.hide();
-            showAlert('Șters!', 'success');
-            loadServices();
-        } catch(e) {}
-    }
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/admin/services/${id}` : '/api/admin/services';
 
-    function showAlert(msg, type) {
-        const d = document.createElement('div');
-        d.className = `alert alert-${type} alert-dismissible fade show`;
-        d.innerHTML = `${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
-        document.getElementById('alertContainer').append(d);
-        setTimeout(() => d.remove(), 3000);
-    }
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-    function escapeHtml(unsafe) {
-        return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+                if(!res.ok) throw new Error("Eroare salvare");
+
+                this.modal.hide();
+                this.showToast(id ? 'Actualizat cu succes!' : 'Creat cu succes!', 'success');
+                this.loadServices();
+            } catch(e) {
+                this.showToast("Eroare: " + e.message, 'danger');
+            }
+        },
+
+        async delete(id) {
+            if(!confirm("Sigur ștergi acest serviciu?")) return;
+            try {
+                const res = await fetch(`/api/admin/services/${id}`, { method: 'DELETE' });
+                if(!res.ok) throw new Error("Nu s-a putut șterge");
+
+                this.showToast("Serviciu șters.", 'success');
+                this.loadServices();
+            } catch(e) {
+                this.showToast("Eroare la ștergere.", 'danger');
+            }
+        },
+
+        showToast(msg, type) {
+            const toastEl = document.getElementById('liveToast');
+            document.getElementById('toastMsg').textContent = msg;
+            toastEl.className = `toast align-items-center text-white border-0 bg-${type === 'success' ? 'success' : 'danger'}`;
+            this.toast.show();
+        },
+
+        escape(unsafe) {
+            return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => ServicesApp.init());
 </script>
 </body>
 </html>
