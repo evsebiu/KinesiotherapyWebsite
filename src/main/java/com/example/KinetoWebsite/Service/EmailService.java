@@ -5,6 +5,7 @@ import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -32,6 +33,7 @@ public class EmailService {
      * Metoda principala care trebuie apelata din Controller.
      * Trimite confirmare la client si notificare la admin.
      */
+    @Async
     public void sendAppointmentConfirmation(AppointmentDTO appointment) {
         // 1. Trimite email catre CLIENT - DOAR DACĂ ARE EMAIL VALID
         // Adăugăm această verificare de siguranță

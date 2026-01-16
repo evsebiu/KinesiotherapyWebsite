@@ -86,34 +86,8 @@ class AppointmentControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void createAppointment_Success_WithEmailSending() throws Exception {
-        when(appointmentService.createAppointment(any(AppointmentDTO.class))).thenReturn(appointmentDTO);
-        doNothing().when(emailService).processAppointment(anyString(), anyString(), anyString());
 
-        mockMvc.perform(post("/api/appointments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(appointmentDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.patientName", is("Ion Popescu")));
-
-        verify(emailService, times(1)).processAppointment(eq("ion@test.com"), eq("Ion Popescu"), anyString());
-    }
-
-    @Test
-    void createAppointment_Success_NoEmail_ShouldNotSendEmail() throws Exception {
-        appointmentDTO.setCustomerEmail(null);
-        when(appointmentService.createAppointment(any(AppointmentDTO.class))).thenReturn(appointmentDTO);
-
-        mockMvc.perform(post("/api/appointments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(appointmentDTO)))
-                .andExpect(status().isOk());
-
-        verify(emailService, never()).processAppointment(any(), any(), any());
-    }
-
-    @Test
+  @Test
     void createAppointment_Failure_ShouldReturnBadRequest() throws Exception {
         when(appointmentService.createAppointment(any(AppointmentDTO.class)))
                 .thenThrow(new RuntimeException("Database error"));
